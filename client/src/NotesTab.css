@@ -1,0 +1,249 @@
+:root {
+  --primary-color: #1976D2;
+  --primary-hover-color: #1565c0;
+  --background-color: #f4f6f8;
+  --surface-color: #ffffff;
+  --text-color: #1e1e1e;
+  --border-radius: 10px;
+  --spacing: 1rem;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --font-family: 'Inter', sans-serif;
+}
+
+.notes-tab {
+  padding: var(--spacing);
+  max-width: 1000px;
+  margin: auto;
+  font-family: var(--font-family);
+  color: var(--text-color);
+}
+
+.notes-tab h1,
+.notes-tab h2 {
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+.notes-tab input[type="file"] {
+  margin-top: 1rem;
+}
+
+.notes-tab textarea {
+  width: 100%;
+  padding: var(--spacing);
+  font-family: var(--font-family);
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  resize: vertical;
+}
+
+.notes-tab button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.95rem;
+  margin-top: 0.5rem;
+}
+
+.notes-tab button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing);
+  margin-top: 1rem;
+}
+
+.note-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing);
+  transition: transform 0.2s ease;
+  cursor: grab;
+}
+
+.note-card:active {
+  cursor: grabbing;
+}
+
+.note-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.note-card p {
+  font-size: 0.9rem;
+  color: #444;
+}
+
+
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  z-index: 1000;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal h2 {
+  margin-bottom: 1rem;
+}
+
+.modal textarea,
+.modal input {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+}
+
+.modal button {
+  margin-right: 0.5rem;
+}
+
+.quiz-score {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.dnd-placeholder {
+  display: none;
+}
+/* Dark Mode Overrides */
+body.dark {
+  --background-color: #181a1e;
+  --surface-color: #242526;
+  --text-color: #f1f1f1;
+  --primary-color: #00bcd4;
+  --primary-hover-color: #0097a7;
+}
+
+body.dark .notes-tab,
+body.dark .notes-tab * {
+  background-color: var(--surface-color) !important;
+  color: var(--text-color) !important;
+  border-color: #555 !important;
+}
+
+body.dark .note-card p {
+  color: var(--text-color) !important;
+}
+
+body.dark textarea,
+body.dark input {
+  background-color: #1e1e1e !important;
+  color: var(--text-color) !important;
+  border-color: #555 !important;
+}
+
+body.dark .modal {
+  background-color: #2a2a2a !important;
+  color: var(--text-color) !important;
+}
+.main-container {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+}
+
+.todo-app {
+  flex: 2;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.task-status,
+.completed-tasks {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.placeholder {
+  height: 150px;
+  background: #eee;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+.note-card.add-card {
+  width: 200px;
+  height: 150px;
+  border: 2px dashed #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  cursor: pointer;
+  background: #fafafa;
+  transition: background 0.3s;
+}
+
+.note-card.add-card:hover {
+  background: #f0f0f0;
+}
+
+.plus {
+  font-size: 2.5rem;
+  line-height: 1;
+  font-weight: bold;
+}
+.form-group label {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+textarea.input.full {
+  width: 100%;
+  resize: vertical;
+}
+
+.btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.spotify-player {
+  margin-top: 1rem;
+}
+
+.btn.danger {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
