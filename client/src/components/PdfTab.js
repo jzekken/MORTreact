@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Summary from './Summary';
 import ChatbotWidget from './ChatbotWidget';
 import QuizPlayer from './QuizPlayer';
-import '../NotesTab.css'; // Ensures consistent styling with NotesTab
+import '../NotesTab.css'; // Update the CSS file name if needed
 
 const PdfTab = ({ onSaveNote }) => {
   const [file, setFile] = useState(null);
@@ -10,19 +10,30 @@ const PdfTab = ({ onSaveNote }) => {
   const [chatContext, setChatContext] = useState(null);
   const [quiz, setQuiz] = useState(null);
   const [quizScore, setQuizScore] = useState(null);
+  const dropRef = useRef(null);
 
-  const handleUpload = async () => {
-    if (!file) return alert('Please select a PDF file first.');
+  const handleUpload = async (uploadFile = file) => {
+    if (!uploadFile || uploadFile.type !== 'application/pdf') {
+      return alert('Please upload a valid PDF file.');
+    }
+
     const formData = new FormData();
-    formData.append('pdf', file);
+    formData.append('pdf', uploadFile);
 
-    const res = await fetch('https://reactmort-server.onrender.com/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-    setExtractedText(data.text);
+    try {
+      const res = await fetch('https://reactmort-server.onrender.com/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data?.text) {
+        setExtractedText(data.text);
+      } else {
+        alert('Failed to extract text.');
+      }
+    } catch (err) {
+      alert('Error uploading file.');
+    }
   };
 
   const generateQuiz = async (textToUse) => {
@@ -31,6 +42,7 @@ const PdfTab = ({ onSaveNote }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: textToUse }),
     });
+
     const data = await res.json();
     if (data.quiz) {
       setQuiz(data.quiz);
@@ -50,60 +62,95 @@ const PdfTab = ({ onSaveNote }) => {
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.type === 'application/pdf') {
+      setFile(droppedFile);
+      handleUpload(droppedFile);
+    } else {
+      alert('Only PDF files are supported.');
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    dropRef.current.classList.add('drag-over');
+  };
+
+  const handleDragLeave = () => {
+    dropRef.current.classList.remove('drag-over');
+  };
+
   return (
-    <div className="todo-app">
-      <div className="card">
-        <h1 className="section-title">📄 PDF Extractor & Summarizer</h1>
-
-        <div className="form-group" style={{ marginBottom: '1rem' }}>
-          <label><strong>📎 Upload PDF File</strong></label>
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => setFile(e.target.files[0])}
-            style={{ marginTop: '0.5rem' }}
-          />
-          <button className="btn primary" style={{ marginTop: '0.8rem' }} onClick={handleUpload}>
-            Upload & Extract
-          </button>
-        </div>
-
-        <div className="form-group" style={{ marginBottom: '1rem' }}>
-          <label><strong>📜 Extracted Text</strong></label>
-          <textarea
-            className="input full"
-            value={extractedText}
-            readOnly
-            rows={10}
-            placeholder="Extracted text will appear here..."
-            style={{ marginTop: '0.5rem' }}
-          />
-        </div>
-
-        <div className="btn-group" style={{ marginBottom: '1.5rem' }}>
-          <button
-            className="btn success"
-            disabled={!extractedText.trim()}
-            onClick={() => handleSaveNote(extractedText)}
-          >
-            💾 Save as Note
-          </button>
-          <button
-            className="btn warn"
-            disabled={!extractedText.trim()}
-            onClick={() => generateQuiz(extractedText)}
-          >
-            🧠 Generate Quiz
-          </button>
-        </div>
-
-        <div style={{ marginBottom: '2rem' }}>
-          <Summary
-            text={extractedText}
-            onSave={(summary) => handleSaveNote(summary)}
-          />
-        </div>
+    <div className="pdf-tab">
+      <div className="header">
+        <h1>PDF Scanner</h1>
       </div>
+
+      <div
+        ref={dropRef}
+        className="upload-box"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+      >
+        <label htmlFor="pdfInput" className="upload-btn">
+          Upload a PDF <span className="upload-icon">📤</span>
+        </label>
+        <p className="upload-hint">or<br />Drag and drop a PDF here</p>
+        <input
+          id="pdfInput"
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => {
+            setFile(e.target.files[0]);
+            handleUpload(e.target.files[0]);
+          }}
+          hidden
+        />
+      </div>
+
+      {extractedText && (
+        <div className="summary-card">
+          <div className="summary-header">
+            <h3>PDF Summary</h3>
+            <button className="btn-primary" onClick={() => handleSaveNote(extractedText)}>
+              + Add to Notes
+            </button>
+          </div>
+          <div className="summary-text">
+            <strong>Summary Result</strong>
+            {extractedText.split(/\n{2,}/).map((para, i) => (
+              <p key={i}>{para.trim()}</p>
+            ))}
+          </div>
+
+          <div className="btn-group" style={{ marginTop: '1rem' }}>
+            <button
+              className="btn-primary"
+              disabled={!extractedText.trim()}
+              onClick={() => handleSaveNote(extractedText)}
+            >
+              💾 Save as Note
+            </button>
+            <button
+              className="btn-primary"
+              disabled={!extractedText.trim()}
+              onClick={() => generateQuiz(extractedText)}
+            >
+              🧠 Generate Quiz
+            </button>
+          </div>
+
+          <div style={{ marginTop: '2rem' }}>
+            <Summary
+              text={extractedText}
+              onSave={(summary) => handleSaveNote(summary)}
+            />
+          </div>
+        </div>
+      )}
 
       {quiz && (
         <div className="modal-backdrop">
@@ -125,7 +172,9 @@ const PdfTab = ({ onSaveNote }) => {
         </div>
       )}
 
-      <ChatbotWidget contextNote={chatContext} />
+      <div className="chatbot-float">
+        <ChatbotWidget contextNote={chatContext} />
+      </div>
     </div>
   );
 };

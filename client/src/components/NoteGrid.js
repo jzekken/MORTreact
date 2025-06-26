@@ -58,21 +58,9 @@ const NoteGrid = ({ notes, onView, onDelete, onReorder, onUseAsContext, onAddNot
               <div
                 className="note-card add-card"
                 onClick={onAddNote}
-                style={{
-                  width: '200px',
-                  height: '150px',
-                  border: '2px dashed #ccc',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  cursor: 'pointer',
-                  background: '#f9f9f9'
-                }}
               >
-                <div className="plus" style={{ fontSize: '2rem', fontWeight: 'bold' }}>+</div>
-                <p style={{ marginTop: '0.5rem' }}>Add Note</p>
+                <div className="plus">+</div>
+                <p>Add Note</p>
               </div>
 
               {provided.placeholder}

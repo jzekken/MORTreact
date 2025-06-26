@@ -1,3 +1,4 @@
+/* Reset and base */
 * {
   margin: 0;
   padding: 0;
@@ -7,36 +8,61 @@ body {
   font-family: Arial, sans-serif;
   background: #f4f4f4;
 }
-/* .main-container {
-  display: flex;
-  padding: 20px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.todo-app {
-  flex: 1;
-  min-width: 300px;
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 300px;
-} */
 
+/* Layout */
 .main-container {
-  flex-grow: 1;
   display: flex;
-  flex-wrap: nowrap;
   gap: 24px;
-  height: calc(100vh - 56px - 72px); /* Adjust height as needed */
+  height: calc(100vh - 56px - 72px);
   padding: 24px;
   overflow: hidden;
+}
+
+/* Mobile layout override */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+    padding: 12px;
+  }
+
+  .todo-app, .right-panel {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .right-panel {
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+  }
+
+  .circle-container {
+    flex: 1 1 100%;
+  }
+
+  .filters {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form input,
+  .form textarea,
+  .form select,
+  .form button {
+    width: 100%;
+  }
+
+  .task-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-right {
+    margin-top: 10px;
+    align-self: flex-end;
+  }
 }
 
 .todo-app, .task-status, .completed-tasks {
@@ -121,36 +147,6 @@ body {
   border: none;
   border-radius: 5px;
 }
-.task {
-  border-left: 5px solid gray;
-  background: #f9f9f9;
-  padding: 10px;
-  margin-top: 15px;
-  border-radius: 8px;
-  position: relative;
-}
-.task .title {
-  font-weight: bold;
-}
-.task .meta {
-  font-size: 12px;
-  color: #555;
-}
-.task .actions {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-.task .actions button {
-  margin-left: 5px;
-  padding: 2px 6px;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-.task[data-status='Completed'] { border-left-color: green; }
-.task[data-status='In Progress'] { border-left-color: blue; }
-.task[data-status='Not Started'] { border-left-color: gray; }
 
 .circular-bars {
   display: flex;
@@ -188,9 +184,6 @@ svg {
   font-weight: bold;
   font-size: 16px;
 }
-.hidden {
-  display: none;
-}
 
 .priority-label {
   font-weight: bold;
@@ -198,47 +191,11 @@ svg {
   border-radius: 4px;
 }
 
-.priority-high {
-  color: red;
-}
+.priority-high { color: red; }
+.priority-medium { color: orange; }
+.priority-low { color: green; }
 
-.priority-medium {
-  color: orange;
-}
-
-.priority-low {
-  color: green;
-}
-
-/* Inserted: Dynamic colored select text only */
-select#priority.text-low {
-  color: green;
-}
-select#priority.text-medium {
-  color: orange;
-}
-select#priority.text-high {
-  color: red;
-}
-
-select#status.text-not-started {
-  color: gray;
-}
-select#status.text-in-progress {
-  color: blue;
-}
-select#status.text-completed {
-  color: green;
-}
-
-.form input[type="date"] {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-family: inherit;
-  color: #333;
-}
-
+/* Filter Section */
 .filter-section {
   margin-top: 20px;
   padding: 15px;
@@ -246,20 +203,17 @@ select#status.text-completed {
   border-radius: 10px;
   box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
 }
-
 .filter-section h4 {
   margin-bottom: 10px;
   font-size: 16px;
   font-weight: bold;
   color: #333;
 }
-
 .filters {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
-
 .filters select,
 .filters input[type="date"],
 .filters button {
@@ -270,7 +224,6 @@ select#status.text-completed {
   font-size: 14px;
   background-color: white;
 }
-
 .filters button {
   background: #153677;
   color: white;
@@ -278,14 +231,11 @@ select#status.text-completed {
   cursor: pointer;
   transition: background 0.3s;
 }
-
 .filters button:hover {
   background: #102a5e;
 }
-/* ========================= */
-/* ✅ NEW: Task Card Layout */
-/* ========================= */
 
+/* Task Cards */
 .task-row {
   display: flex;
   justify-content: space-between;
@@ -303,22 +253,16 @@ select#status.text-completed {
   font-weight: 600;
   color: #333;
 }
-
 .task-date {
   font-size: 14px;
   color: #888;
   margin-top: 4px;
 }
-
 .task-right {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
-/* ============================== */
-/* ✅ NEW: Status & Priority Tags */
-/* ============================== */
 
 .badge {
   padding: 4px 10px;
@@ -327,42 +271,88 @@ select#status.text-completed {
   font-weight: 600;
   color: white;
 }
+.status-badge.not-started { background-color: #fd7e14; }
+.status-badge.in-progress { background-color: #007bff; }
+.status-badge.completed    { background-color: #28a745; }
+.priority-badge.high       { background-color: #dc3545; }
+.priority-badge.medium     { background-color: #ffc107; color: #333; }
+.priority-badge.low        { background-color: #20c997; }
 
-.status-badge.not-started { background-color: #fd7e14; }  /* Orange */
-.status-badge.in-progress { background-color: #007bff; }  /* Blue */
-.status-badge.completed    { background-color: #28a745; }  /* Green */
-
-.priority-badge.high       { background-color: #dc3545; }  /* Red */
-.priority-badge.medium     { background-color: #ffc107; color: #333; } /* Yellow */
-.priority-badge.low        { background-color: #20c997; }  /* Teal Green */
-
-/* ========================== */
-/* ✅ NEW: Colored Status Dot */
-/* ========================== */
-
-.status-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
+.task-row.completed {
+  background-color: #e9f8ed;
+  border-left: 5px solid #28a745;
+}
+.task-row.completed .task-title {
+  color: #155724;
+}
+.task-row.completed .task-date {
+  color: #1c5631;
 }
 
-.green-dot  { background-color: #28a745; }
-.red-dot    { background-color: #dc3545; }
-.yellow-dot { background-color: #ffc107; }
-
-/* ======================= */
-/* ✅ NEW: Action Buttons */
-/* ======================= */
-
-.actions button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
+/* Dark Mode */
+body.dark .main-container {
+  background-color: #1e1e2f;
+  color: #f1f1f1;
 }
-
-.actions {
-  display: flex;
-  gap: 6px;
+body.dark .todo-app,
+body.dark .right-panel {
+  background-color: #2a2a40;
+}
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+}
+body.dark .form input,
+body.dark .form textarea,
+body.dark .form select {
+  background-color: #333;
+  color: #fff;
+}
+body.dark .task-row:not(.completed) {
+  background-color: #2c2c3a;
+  border-color: #444;
+}
+body.dark .task-row:not(.completed) .task-title {
+  color: #f1f1f1;
+}
+body.dark .task-row:not(.completed) .task-date {
+  color: #bbb;
+}
+body.dark button {
+  background-color: #444;
+  color: #fff;
+  border: 1px solid #666;
+}
+body.dark .filter-section {
+  background-color: #2f2f45;
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.03);
+}
+body.dark .filter-section h4 {
+  color: #f1f1f1;
+}
+body.dark .filters select,
+body.dark .filters input[type="date"] {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+}
+body.dark .filters button {
+  background: #4e085f;
+  color: #fff;
+}
+body.dark .filters button:hover {
+  background: #3a0648;
+}
+body.dark .task-row.completed {
+  background-color: #223024;
+  border-left: 5px solid #28a745;
+}
+body.dark .task-row.completed .task-title {
+  color: #d4f5da;
+}
+body.dark .task-row.completed .task-date {
+  color: #9cccac;
 }

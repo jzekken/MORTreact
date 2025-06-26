@@ -1,3 +1,4 @@
+// NotesTab.js
 import React, { useState, useEffect } from 'react';
 import ChatbotWidget from './components/ChatbotWidget';
 import NoteGrid from './components/NoteGrid';
@@ -10,7 +11,6 @@ function NotesTab({ notes, setNotes }) {
   const [editingNote, setEditingNote] = useState(null);
   const [chatContext, setChatContext] = useState(null);
   const [quiz, setQuiz] = useState(null);
-  const [quizScore, setQuizScore] = useState(null);
   const [quizHistory, setQuizHistory] = useState(() => {
     const saved = localStorage.getItem('quizHistory');
     return saved ? JSON.parse(saved) : [];
@@ -27,7 +27,6 @@ function NotesTab({ notes, setNotes }) {
     const data = await res.json();
     if (data.quiz) {
       setQuiz(data.quiz);
-      setQuizScore(null);
     } else {
       alert('Quiz generation failed.');
     }
@@ -39,21 +38,6 @@ function NotesTab({ notes, setNotes }) {
     setNotes(prev => [...prev, newEntry]);
     setNewNote({ title: '', content: '' });
     setAddingNote(false);
-  };
-
-  const handleQuizFinish = (score, total) => {
-    const quizEntry = {
-      id: Date.now(),
-      title: chatContext?.title || 'Untitled Note',
-      score,
-      total,
-      date: new Date().toLocaleString()
-    };
-    const updated = [quizEntry, ...quizHistory];
-    setQuizHistory(updated);
-    localStorage.setItem('quizHistory', JSON.stringify(updated));
-    setQuizScore({ score, total });
-    setQuiz(null);
   };
 
   return (
@@ -92,40 +76,39 @@ function NotesTab({ notes, setNotes }) {
               frameBorder="0"
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
+              title="spotify-player"
             ></iframe>
           </div>
         </div>
 
-
-
         <div className="completed-tasks">
-            <h3>Completed Quiz</h3>
-            {quizHistory.length > 0 ? (
-              quizHistory.map((quiz) => (
-                <div className="task-row completed" key={quiz.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
-                    <div className="task-title">{quiz.title}</div>
-                    <div className="task-date">{quiz.date}</div>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <div className="task-score">{quiz.score} / {quiz.total}</div>
-                    <button
-                      className="btn danger"
-                      onClick={() => {
-                        const updated = quizHistory.filter(q => q.id !== quiz.id); // ✅ Only delete the clicked one
-                        setQuizHistory(updated);
-                        localStorage.setItem('quizHistory', JSON.stringify(updated));
-                      }}
-                    >
-                      🗑
-                    </button>
-                  </div>
+          <h3>Completed Quiz</h3>
+          {quizHistory.length > 0 ? (
+            quizHistory.map((quiz) => (
+              <div className="task-row completed" key={quiz.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div className="task-title">{quiz.title}</div>
+                  <div className="task-date">{quiz.date}</div>
                 </div>
-              ))
-            ) : (
-              <p>No quiz taken yet.</p>
-            )}
-          </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div className="task-score">{quiz.score} / {quiz.total}</div>
+                  <button
+                    className="btn danger"
+                    onClick={() => {
+                      const updated = quizHistory.filter(q => q.id !== quiz.id);
+                      setQuizHistory(updated);
+                      localStorage.setItem('quizHistory', JSON.stringify(updated));
+                    }}
+                  >
+                    🗑
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>No quiz taken yet.</p>
+          )}
+        </div>
       </div>
 
       {viewingNote && (
@@ -207,11 +190,10 @@ function NotesTab({ notes, setNotes }) {
           <QuizPlayer
             quiz={quiz}
             onFinish={({ score, total, title, date }) => {
-              const result = { score, total, title, date };
+              const result = { id: Date.now(), score, total, title, date };
               const updated = [result, ...quizHistory];
               setQuizHistory(updated);
               localStorage.setItem('quizHistory', JSON.stringify(updated));
-              setQuizScore(result);
             }}
             onClose={() => setQuiz(null)}
           />

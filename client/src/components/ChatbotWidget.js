@@ -71,9 +71,9 @@ const ChatbotWidget = ({ contextNote }) => {
             color: '#fff',
             border: 'none',
             borderRadius: '50%',
-            width: '60px',
-            height: '60px',
-            fontSize: '28px',
+            width: '42px',
+            height: '42px',
+            fontSize: '16px',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -81,7 +81,7 @@ const ChatbotWidget = ({ contextNote }) => {
             cursor: 'pointer',
           }}
         >
-          <FiMessageCircle />
+          <FiMessageCircle size={16} />
         </button>
       )}
 
@@ -116,11 +116,11 @@ const ChatbotWidget = ({ contextNote }) => {
                 background: 'transparent',
                 border: 'none',
                 color: '#fff',
-                fontSize: '18px',
+                fontSize: '14px',
                 cursor: 'pointer',
               }}
             >
-              <FiX />
+              <FiX size={14} />
             </button>
           </div>
 

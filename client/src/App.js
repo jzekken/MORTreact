@@ -24,7 +24,7 @@ const App = () => {
   return (
     <div className="app-container">
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+      <div className={`sidebar ${sidebarOpen ? 'open' : 'close'}`}>
         <a href="#" className="logo">
           <i className='bx bx-code-alt'></i>
           <div className="logo-name"><span>MO</span>RT</div>

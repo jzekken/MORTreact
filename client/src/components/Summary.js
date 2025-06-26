@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { marked } from 'marked';
+import '../NotesTab.css'; // Update the CSS file name if needed
 
 const Summary = ({ text, onSave }) => {
   const [summary, setSummary] = useState('');
@@ -27,9 +28,15 @@ const Summary = ({ text, onSave }) => {
   return (
     <div style={{ padding: '1rem' }}>
       <h2>AI Summary</h2>
-      <button onClick={handleSummarize} disabled={loading}>
-        {loading ? 'Summarizing...' : 'Summarize Extracted Text'}
+      <button
+        className="btn-primary"
+        onClick={handleSummarize}
+        disabled={loading}
+        style={{ marginBottom: '1rem' }}
+      >
+        {loading ? 'Summarizing...' : '📝 Summarize Extracted Text'}
       </button>
+
 
       <div>
         <h3>Summary</h3>
@@ -38,9 +45,14 @@ const Summary = ({ text, onSave }) => {
           style={{ textAlign: 'left', marginTop: '1rem' }}
         />
         {summary && (
-          <button onClick={() => onSave(summary)} style={{ marginTop: '1rem' }}>
+          <button
+            className="btn-primary"
+            onClick={() => onSave(summary)}
+            style={{ marginTop: '1rem' }}
+          >
             💾 Save Summary as Note
           </button>
+
         )}
       </div>
     </div>

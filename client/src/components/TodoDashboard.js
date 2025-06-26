@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TodoDashboard.css';
-
+ 
 const TodoDashboard = () => {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState('');
@@ -11,30 +11,30 @@ const TodoDashboard = () => {
   const [editId, setEditId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [filters, setFilters] = useState({ priority: '', status: '', date: '' });
-
+ 
   useEffect(() => {
     updateProgress();
   }, [tasks]);
-
+ 
   const saveTask = () => {
-    if (!title || !description || !dueDate) return alert('Please fill out all fields');
-
+    if (!title || !description) return alert('Please fill out all required fields');
+ 
     const newTask = {
       id: editId || Date.now(),
       title,
       description,
       status,
       priority,
-      dueDate,
+      dueDate: dueDate || 'None',
     };
-
+ 
     if (editId) {
       setTasks(tasks.map(t => (t.id === editId ? newTask : t)));
       setEditId(null);
     } else {
       setTasks([...tasks, newTask]);
     }
-
+ 
     // Reset form
     setTitle('');
     setDescription('');
@@ -43,33 +43,33 @@ const TodoDashboard = () => {
     setDueDate('');
     setShowForm(false);
   };
-
+ 
   const editTask = (id) => {
     const task = tasks.find(t => t.id === id);
     setTitle(task.title);
     setDescription(task.description);
     setStatus(task.status);
     setPriority(task.priority);
-    setDueDate(task.dueDate);
+    setDueDate(task.dueDate !== 'None' ? task.dueDate : '');
     setEditId(id);
     setShowForm(true);
   };
-
+ 
   const deleteTask = (id) => {
     setTasks(tasks.filter(t => t.id !== id));
   };
-
+ 
   const updateProgress = () => {
     const total = tasks.length || 1;
     const completed = tasks.filter(t => t.status === 'Completed').length;
     const inProgress = tasks.filter(t => t.status === 'In Progress').length;
     const notStarted = tasks.filter(t => t.status === 'Not Started').length;
-
+ 
     setCircle('completed-bar', 'completed-count', (completed / total) * 100);
     setCircle('progress-bar', 'progress-count', (inProgress / total) * 100);
     setCircle('notstarted-bar', 'notstarted-count', (notStarted / total) * 100);
   };
-
+ 
   const setCircle = (barId, labelId, percent) => {
     const circle = document.getElementById(barId);
     const label = document.getElementById(labelId);
@@ -79,7 +79,7 @@ const TodoDashboard = () => {
     circle.style.strokeDashoffset = circumference - (percent / 100) * circumference;
     label.textContent = `${Math.round(percent)}%`;
   };
-
+ 
   const filteredTasks = tasks.filter(task => {
     return (
       (!filters.priority || task.priority === filters.priority) &&
@@ -87,11 +87,11 @@ const TodoDashboard = () => {
       (!filters.date || task.dueDate === filters.date)
     );
   });
-
+ 
   const resetFilters = () => {
     setFilters({ priority: '', status: '', date: '' });
   };
-
+ 
   return (
     <div className="main-container">
       {/* LEFT - To-Do App */}
@@ -101,12 +101,12 @@ const TodoDashboard = () => {
           <span>{new Date().toLocaleDateString()}</span>
           <button onClick={() => setShowForm(!showForm)}>+ Add Task</button>
         </div>
-
+ 
         {showForm && (
           <div className="form">
             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Task Title" />
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-            <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} />
+            <input type="date" value={dueDate} min={new Date().toISOString().split("T")[0]} onChange={(e) => setDueDate(e.target.value)} />
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="Not Started">Not Started</option>
               <option value="In Progress">In Progress</option>
@@ -120,7 +120,7 @@ const TodoDashboard = () => {
             <button onClick={saveTask}>Save Task</button>
           </div>
         )}
-
+ 
         {/* Filters */}
         <div className="filter-section">
           <h4>Filter Tasks</h4>
@@ -131,45 +131,47 @@ const TodoDashboard = () => {
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
             </select>
+            {/* status silter without completed */}
             <select value={filters.status} onChange={(e) => setFilters({ ...filters, status: e.target.value })}>
               <option value="">All Status</option>
               <option value="Not Started">Not Started</option>
               <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
             </select>
-            <input type="date" value={filters.date} onChange={(e) => setFilters({ ...filters, date: e.target.value })} />
+            <input type="date" value={filters.date} min={new Date().toISOString().split("T")[0]} onChange={(e) => setFilters({ ...filters, date: e.target.value })} />
             <button onClick={resetFilters}>Reset Filters</button>
           </div>
         </div>
-
+ 
         {/* Task List */}
         <div id="todo-tasks">
-          {filteredTasks.map((task) => (
-            <div
-              key={task.id}
-              className={`task-row ${task.status.replace(/\s+/g, '-').toLowerCase()} ${task.priority.toLowerCase()}-priority`}
-            >
-              <div>
-                <div className="task-title">{task.title}</div>
-                <div className="task-date">Due: {task.dueDate}</div>
-                <div className="badges">
-                  <span className={`badge status-badge ${task.status.replace(/\s+/g, '-').toLowerCase()}`}>
-                    {task.status}
-                  </span>
-                  <span className={`badge priority-badge ${task.priority.toLowerCase()}`}>
-                    {task.priority} Priority
-                  </span>
+          {filteredTasks
+            .filter(task => task.status !== 'Completed') // exclude completed tasks mannn sheshh
+            .map((task) => (
+              <div
+                key={task.id}
+                className={`task-row ${task.status.replace(/\s+/g, '-').toLowerCase()} ${task.priority.toLowerCase()}-priority`}
+              >
+                <div>
+                  <div className="task-title">{task.title}</div>
+                  <div className="task-date">Due: {task.dueDate !== 'None' ? task.dueDate : 'None'}</div>
+                  <div className="badges">
+                    <span className={`badge status-badge ${task.status.replace(/\s+/g, '-').toLowerCase()}`}>
+                      {task.status}
+                    </span>
+                    <span className={`badge priority-badge ${task.priority.toLowerCase()}`}>
+                      {task.priority} Priority
+                    </span>
+                  </div>
+                </div>
+                <div className="task-right">
+                  <button onClick={() => editTask(task.id)}>✏️</button>
+                  <button onClick={() => deleteTask(task.id)}>🗑️</button>
                 </div>
               </div>
-              <div className="task-right">
-                <button onClick={() => editTask(task.id)}>✏️</button>
-                <button onClick={() => deleteTask(task.id)}>🗑️</button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
-
+ 
       {/* RIGHT PANEL */}
       <div className="right-panel">
         <div className="task-status">
@@ -192,14 +194,14 @@ const TodoDashboard = () => {
             </div>
           </div>
         </div>
-
+ 
         <div className="completed-tasks">
           <h3>Completed Tasks</h3>
           {tasks.filter(t => t.status === 'Completed').map(task => (
             <div key={task.id} className="task-row completed">
               <div>
                 <div className="task-title">{task.title}</div>
-                <div className="task-date">Due: {task.dueDate}</div>
+                <div className="task-date">Due: {task.dueDate !== 'None' ? task.dueDate : 'None'}</div>
               </div>
             </div>
           ))}
@@ -208,5 +210,5 @@ const TodoDashboard = () => {
     </div>
   );
 };
-
+ 
 export default TodoDashboard;

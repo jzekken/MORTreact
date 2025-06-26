@@ -10,6 +10,7 @@
   --font-family: 'Inter', sans-serif;
 }
 
+/* NotesTab base */
 .notes-tab {
   padding: var(--spacing);
   max-width: 1000px;
@@ -53,6 +54,7 @@
   background-color: var(--primary-hover-color);
 }
 
+/* Note Grid */
 .note-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -83,21 +85,20 @@
   color: #444;
 }
 
-
-
+/* Modal */
 .modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 90%;
-  max-width: 600px;
+  width: 95%;
+  max-width: 1000px;
   background-color: var(--surface-color);
   border-radius: var(--border-radius);
   padding: 2rem;
   box-shadow: var(--shadow);
   z-index: 1000;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
 }
 
@@ -129,39 +130,11 @@
 .dnd-placeholder {
   display: none;
 }
-/* Dark Mode Overrides */
-body.dark {
-  --background-color: #181a1e;
-  --surface-color: #242526;
-  --text-color: #f1f1f1;
-  --primary-color: #00bcd4;
-  --primary-hover-color: #0097a7;
-}
 
-body.dark .notes-tab,
-body.dark .notes-tab * {
-  background-color: var(--surface-color) !important;
-  color: var(--text-color) !important;
-  border-color: #555 !important;
-}
-
-body.dark .note-card p {
-  color: var(--text-color) !important;
-}
-
-body.dark textarea,
-body.dark input {
-  background-color: #1e1e1e !important;
-  color: var(--text-color) !important;
-  border-color: #555 !important;
-}
-
-body.dark .modal {
-  background-color: #2a2a2a !important;
-  color: var(--text-color) !important;
-}
+/* Layout */
 .main-container {
   display: flex;
+  flex-wrap: wrap;
   padding: 20px;
   gap: 20px;
 }
@@ -171,6 +144,7 @@ body.dark .modal {
   background: #fff;
   padding: 20px;
   border-radius: 10px;
+  overflow-y: auto;
 }
 
 .right-panel {
@@ -187,15 +161,7 @@ body.dark .modal {
   border-radius: 10px;
 }
 
-.placeholder {
-  height: 150px;
-  background: #eee;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #999;
-}
+/* Add note card */
 .note-card.add-card {
   width: 200px;
   height: 150px;
@@ -219,6 +185,8 @@ body.dark .modal {
   line-height: 1;
   font-weight: bold;
 }
+
+/* Inputs and buttons */
 .form-group label {
   font-weight: bold;
   font-size: 15px;
@@ -233,6 +201,7 @@ textarea.input.full {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  flex-wrap: wrap;
 }
 
 .spotify-player {
@@ -246,4 +215,275 @@ textarea.input.full {
   padding: 0.4rem 0.6rem;
   border-radius: 4px;
   cursor: pointer;
+}
+
+/* 🌙 Dark Mode Overrides */
+body.dark {
+  --background-color: #181a1e;
+  --surface-color: #242526;
+  --text-color: #f1f1f1;
+  --primary-color: #00bcd4;
+  --primary-hover-color: #0097a7;
+}
+
+body.dark .notes-tab,
+body.dark .notes-tab * {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border-color: #555;
+}
+
+body.dark .note-card {
+  background-color: #2b2d33;
+  color: var(--text-color);
+}
+
+body.dark .note-card p {
+  color: var(--text-color);
+}
+
+body.dark textarea,
+body.dark input,
+body.dark .modal textarea,
+body.dark .modal input {
+  background-color: #1e1e1e;
+  color: var(--text-color);
+  border-color: #555;
+}
+
+body.dark .modal {
+  background-color: #2a2a2a;
+  color: var(--text-color);
+}
+
+body.dark .btn.danger {
+  background-color: #e53935;
+}
+
+body.dark .main-container {
+  background-color: #1e1e2f;
+  color: var(--text-color);
+}
+
+body.dark .todo-app,
+body.dark .task-status,
+body.dark .completed-tasks {
+  background-color: #2b2b3c;
+  color: var(--text-color);
+  border: 1px solid #444;
+}
+
+body.dark .note-card.add-card {
+  background: #2b2d33;
+  border: 2px dashed #555;
+  color: #ccc;
+}
+
+body.dark .note-card.add-card:hover {
+  background: #3a3a3a;
+  box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+}
+
+.note-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  padding: var(--spacing);
+  transition: background-color 0.3s;
+}
+
+body.dark .note-card {
+  background-color: #2b2b3c;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.card {
+  overflow-y: auto;
+  max-height: 80vh;
+  padding-right: 8px;
+}
+
+.card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.card::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+body.dark .card::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.pdf-tab {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-box {
+  width: 100%;
+  max-width: 1000px;
+  margin-bottom: 2rem;
+  border: 2px dashed #ccc;
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background: #fff;
+}
+
+.upload-box.drag-over {
+  background-color: #e0e0e0;
+}
+
+.upload-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: inline-block;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 1000px;
+  width: 100%;
+}
+
+.summary-text p {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+body.dark .pdf-tab {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+body.dark .upload-box {
+  background-color: var(--surface-color);
+  border-color: #555;
+}
+
+body.dark .upload-box.drag-over {
+  background-color: #2a2a2a;
+}
+
+body.dark .upload-btn {
+  background-color: #2e2e2e;
+  color: var(--text-color);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+body.dark .summary-card {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: 1px solid #444;
+}
+
+body.dark .summary-text p {
+  color: var(--text-color);
+}
+
+@media screen and (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .right-panel {
+    display: none;
+  }
+
+  .todo-app {
+    width: 100%;
+    flex: 1 1 100%;
+    min-height: 80vh;
+  }
+
+  .note-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    padding: 1rem;
+  }
+
+  .sidebar {
+    left: -200px;
+    width: 200px;
+    position: fixed;
+    height: 100%;
+    z-index: 1000;
+    transition: left 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .content {
+    width: 100%;
+    left: 0;
+    transition: all 0.3s ease;
+  }
+
+  .sidebar.open ~ .content::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 200px;
+    width: calc(100% - 200px);
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 999;
+  }
+
+  .content nav .bx.bx-menu {
+    z-index: 1001;
+  }
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover-color);
+}
+
+body.dark .btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+body.dark .btn-primary:hover {
+  background-color: var(--primary-hover-color);
 }

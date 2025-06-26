@@ -4,17 +4,13 @@ import { marked } from 'marked';
 const NoteCard = ({ note, onView, onDelete, onUseAsContext }) => {
   return (
     <div
-      style={{
-        background: '#f9f9f9',
-        border: '1px solid #ddd',
-        borderRadius: '10px',
-        padding: '1rem',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
-        cursor: 'pointer',
-        position: 'relative',
-        width: '240px'
-      }}
+      className="note-card"
       onClick={() => onView(note)}
+      style={{
+        position: 'relative',
+        width: '240px',
+        cursor: 'pointer',
+      }}
     >
       <h3>{note.title}</h3>
 
@@ -22,7 +18,10 @@ const NoteCard = ({ note, onView, onDelete, onUseAsContext }) => {
         dangerouslySetInnerHTML={{
           __html: marked.parse(note.content.slice(0, 300) + '...')
         }}
-        style={{ fontSize: '14px', lineHeight: '1.4' }}
+        style={{
+          fontSize: '14px',
+          lineHeight: '1.4',
+        }}
       />
 
       <button
@@ -39,8 +38,9 @@ const NoteCard = ({ note, onView, onDelete, onUseAsContext }) => {
           color: 'red',
           fontWeight: 'bold',
           fontSize: '16px',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
+        title="Delete"
       >
         ×
       </button>
@@ -60,10 +60,11 @@ const NoteCard = ({ note, onView, onDelete, onUseAsContext }) => {
           border: 'none',
           borderRadius: '6px',
           padding: '4px 6px',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
+        title="Use as chat context"
       >
-        📌 Use as Chat Context
+        📌
       </button>
     </div>
   );
