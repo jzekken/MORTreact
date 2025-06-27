@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiMessageCircle, FiX, FiMic, FiSend } from 'react-icons/fi';
+import { FiMessageCircle, FiX , FiMic, FiSend } from 'react-icons/fi';
+import { IoClose } from 'react-icons/io5';
 import axios from 'axios';
 
 const ChatbotWidget = ({ contextNote }) => {
@@ -7,12 +8,21 @@ const ChatbotWidget = ({ contextNote }) => {
   const [chat, setChat] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(document.body.classList.contains('dark'));
   const recognitionRef = useRef(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chat, loading]);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.body.classList.contains('dark'));
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    return () => observer.disconnect();
+  }, []);
 
   const speak = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -88,14 +98,16 @@ const ChatbotWidget = ({ contextNote }) => {
       {isOpen && (
         <div
           style={{
-            width: '320px',
+            width: '90vw',
+            maxWidth: '350px',
             height: '470px',
-            background: '#fff',
+            background: isDarkMode ? '#1e1e1e' : '#fff',
             borderRadius: '10px',
             boxShadow: '0 0 12px rgba(0,0,0,0.2)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
+            color: isDarkMode ? '#f5f5f5' : '#000',
           }}
         >
           {/* Header */}
@@ -116,11 +128,13 @@ const ChatbotWidget = ({ contextNote }) => {
                 background: 'transparent',
                 border: 'none',
                 color: '#fff',
-                fontSize: '14px',
+                fontSize: '20px',
+                fontWeight: 'bold', 
                 cursor: 'pointer',
+                lineHeight: 1,
               }}
             >
-              <FiX size={14} />
+              X
             </button>
           </div>
 
@@ -131,11 +145,17 @@ const ChatbotWidget = ({ contextNote }) => {
               padding: '10px',
               overflowY: 'auto',
               fontSize: '14px',
-              background: '#fafafa',
+              background: isDarkMode ? '#2c2c2c' : '#fafafa',
             }}
           >
             {contextNote && (
-              <div style={{ background: '#eef7ff', padding: '5px 8px', marginBottom: '10px', fontSize: '12px' }}>
+              <div style={{
+                background: isDarkMode ? '#2b3b55' : '#eef7ff',
+                padding: '5px 8px',
+                marginBottom: '10px',
+                fontSize: '12px',
+                borderRadius: '6px'
+              }}>
                 🔗 Using note: <strong>{contextNote.title}</strong>
               </div>
             )}
@@ -150,10 +170,13 @@ const ChatbotWidget = ({ contextNote }) => {
                 <div
                   style={{
                     display: 'inline-block',
-                    background: msg.role === 'user' ? '#DCF8C6' : '#e9e9e9',
+                    background: msg.role === 'user'
+                      ? (isDarkMode ? '#3b5545' : '#DCF8C6')
+                      : (isDarkMode ? '#3a3a3a' : '#e9e9e9'),
                     padding: '8px 12px',
                     borderRadius: '14px',
                     maxWidth: '85%',
+                    color: isDarkMode ? '#f0f0f0' : '#000',
                   }}
                 >
                   {msg.text}
@@ -165,7 +188,11 @@ const ChatbotWidget = ({ contextNote }) => {
           </div>
 
           {/* Input & Buttons */}
-          <div style={{ padding: '10px', borderTop: '1px solid #ddd' }}>
+          <div style={{
+            padding: '10px',
+            borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
+            background: isDarkMode ? '#1e1e1e' : '#fff'
+          }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
@@ -181,31 +208,31 @@ const ChatbotWidget = ({ contextNote }) => {
                   flex: 1,
                   padding: '8px',
                   fontSize: '14px',
-                  border: '1px solid #ccc',
+                  border: isDarkMode ? '1px solid #666' : '1px solid #ccc',
                   borderRadius: '6px',
+                  background: isDarkMode ? '#2e2e2e' : '#fff',
+                  color: isDarkMode ? '#f5f5f5' : '#000',
                 }}
               />
 
               <button
-                    onClick={startListening}
-                    title="Voice input"
-                    style={{
-                      background: '#f1f1f1',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '6px',
-                      width: '36px',
-                      height: '36px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      transform: 'scaleX(1)', // ← FIX flip if browser auto-mirrors
-                    }}
-                  >
-                    <FiMic size={18} style={{ transform: 'scaleX(1)' }} />
-                  </button>
-
+                onClick={startListening}
+                title="Voice input"
+                style={{
+                  background: isDarkMode ? '#444' : '#f1f1f1',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '6px',
+                  width: '36px',
+                  height: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                }}
+              >
+                <FiMic size={18} style={{ transform: 'scaleX(1)' }} />
+              </button>
 
               <button
                 onClick={handleSend}
