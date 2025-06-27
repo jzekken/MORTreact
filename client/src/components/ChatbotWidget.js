@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiMessageCircle, FiX , FiMic, FiSend } from 'react-icons/fi';
+import { FiMessageCircle, FiMic, FiSend } from 'react-icons/fi';
 import axios from 'axios';
 
 const ChatbotWidget = ({ contextNote }) => {
@@ -106,6 +106,7 @@ const ChatbotWidget = ({ contextNote }) => {
             boxShadow: '0 0 12px rgba(0,0,0,0.2)',
             display: 'flex',
             flexDirection: 'column',
+            flexShrink: 0,
             overflow: 'hidden',
             color: isDarkMode ? '#f5f5f5' : '#000',
             touchAction: 'manipulation',
@@ -130,7 +131,7 @@ const ChatbotWidget = ({ contextNote }) => {
                 border: 'none',
                 color: '#fff',
                 fontSize: '20px',
-                fontWeight: 'bold', 
+                fontWeight: 'bold',
                 cursor: 'pointer',
                 lineHeight: 1,
               }}
@@ -193,12 +194,15 @@ const ChatbotWidget = ({ contextNote }) => {
             padding: '10px',
             borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
             background: isDarkMode ? '#1e1e1e' : '#fff',
+            flexShrink: 0,
+            boxSizing: 'border-box',
           }}>
             <div style={{
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               width: '100%',
+              overflow: 'hidden',
             }}>
               <input
                 value={input}
@@ -224,15 +228,16 @@ const ChatbotWidget = ({ contextNote }) => {
                   border: 'none',
                   borderRadius: '6px',
                   padding: '6px',
-                  width: '36px',
-                  height: '36px',
+                  width: '32px',
+                  height: '32px',
+                  minWidth: '32px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                 }}
               >
-                <FiMic size={18} style={{ transform: 'scaleX(1)' }} />
+                <FiMic size={16} style={{ transform: 'scaleX(1)' }} />
               </button>
 
               <button
@@ -244,15 +249,16 @@ const ChatbotWidget = ({ contextNote }) => {
                   border: 'none',
                   borderRadius: '6px',
                   padding: '6px',
-                  width: '36px',
-                  height: '36px',
+                  width: '32px',
+                  height: '32px',
+                  minWidth: '32px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                 }}
               >
-                <FiSend size={18} />
+                <FiSend size={16} />
               </button>
             </div>
           </div>
