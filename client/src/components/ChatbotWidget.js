@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FiMessageCircle, FiX , FiMic, FiSend } from 'react-icons/fi';
-import { IoClose } from 'react-icons/io5';
 import axios from 'axios';
 
 const ChatbotWidget = ({ contextNote }) => {
@@ -72,7 +71,7 @@ const ChatbotWidget = ({ contextNote }) => {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
+    <div style={{ position: 'fixed', bottom: isOpen ? '0' : '20px', right: '20px', zIndex: 1000 }}>
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -99,8 +98,9 @@ const ChatbotWidget = ({ contextNote }) => {
         <div
           style={{
             width: '90vw',
-            maxWidth: '350px',
-            height: '470px',
+            maxWidth: '360px',
+            height: window.innerWidth < 768 ? '80vh' : '470px',
+            maxHeight: '95vh',
             background: isDarkMode ? '#1e1e1e' : '#fff',
             borderRadius: '10px',
             boxShadow: '0 0 12px rgba(0,0,0,0.2)',
@@ -108,6 +108,7 @@ const ChatbotWidget = ({ contextNote }) => {
             flexDirection: 'column',
             overflow: 'hidden',
             color: isDarkMode ? '#f5f5f5' : '#000',
+            touchAction: 'manipulation',
           }}
         >
           {/* Header */}
@@ -192,9 +193,6 @@ const ChatbotWidget = ({ contextNote }) => {
             padding: '10px',
             borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
             background: isDarkMode ? '#1e1e1e' : '#fff',
-            position: 'sticky',
-            bottom: 0,
-            zIndex: 2,
           }}>
             <div style={{
               display: 'flex',
