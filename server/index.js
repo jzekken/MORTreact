@@ -156,19 +156,21 @@ app.post('/custom-quiz', async (req, res) => {
     }).join(', ');
 
     const prompt = `
-You're a helpful study assistant. Generate ${count} quiz questions from the academic content below.
-Include a mix of these types: ${typeInstructions}.
-Each question should include:
+You are a quiz generator. Based on the following academic content, generate exactly ${count} quiz questions.
 
-- "question": the quiz question
+Each question must include:
+- "question": the question text
 - "type": either "multipleChoice", "trueFalse", or "identification"
-- "options": (only for multipleChoice and trueFalse) array of answer choices
-- "correct": correct answer (index for MCQ/TF, string for ID)
-- "explanation": brief explanation of the answer
+- "options": array of options (only for multipleChoice and trueFalse)
+- "correct": the correct answer (index for MCQ/TF, string for ID)
+- "explanation": a brief explanation for the answer
 
-Respond with a JSON array of ${count} questions only. No extra commentary.
+The question types should be a mix of: ${typeInstructions}.
 
-Content:
+⚠️ VERY IMPORTANT: Only return a valid JSON array of exactly ${count} quiz question objects.
+Do NOT return more or fewer than ${count}. Do NOT include any commentary, markdown, headings, or other text outside the JSON array.
+
+Academic content:
 ${text}
 `;
 
@@ -178,7 +180,14 @@ ${text}
     const jsonStart = responseText.indexOf('[');
     const jsonEnd = responseText.lastIndexOf(']') + 1;
     const cleanJson = responseText.slice(jsonStart, jsonEnd);
+
     const quiz = JSON.parse(cleanJson);
+
+    // Validate response length
+    if (!Array.isArray(quiz) || quiz.length !== Number(count)) {
+      console.warn(`⚠️ Gemini returned ${quiz.length} questions instead of ${count}`);
+      return res.status(500).json({ error: `Received ${quiz.length} questions instead of ${count}. Try again or simplify the input.` });
+    }
 
     res.json({ quiz });
   } catch (err) {
@@ -186,3 +195,4 @@ ${text}
     res.status(500).json({ error: 'Failed to generate custom quiz. Try again.' });
   }
 });
+
