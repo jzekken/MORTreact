@@ -487,3 +487,16 @@ body.dark .btn-primary {
 body.dark .btn-primary:hover {
   background-color: var(--primary-hover-color);
 }
+.btn-secondary {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+.btn-secondary:hover {
+  background-color: #f0f0f0;
+}

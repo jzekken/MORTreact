@@ -132,3 +132,57 @@ ${text}
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   });
+// ADVANCED QUIZ GENERATION ENDPOINT
+app.post('/custom-quiz', async (req, res) => {
+  const { text, count, types } = req.body;
+
+  if (!text || !count || !types || types.length === 0) {
+    return res.status(400).json({ error: 'Missing required fields: text, count, or types' });
+  }
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  try {
+    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
+
+    // Build prompt dynamically
+    const typeInstructions = types.map(type => {
+      switch (type) {
+        case 'multipleChoice': return 'multiple-choice';
+        case 'trueFalse': return 'true or false';
+        case 'identification': return 'identification';
+        default: return '';
+      }
+    }).join(', ');
+
+    const prompt = `
+You're a helpful study assistant. Generate ${count} quiz questions from the academic content below.
+Include a mix of these types: ${typeInstructions}.
+Each question should include:
+
+- "question": the quiz question
+- "type": either "multipleChoice", "trueFalse", or "identification"
+- "options": (only for multipleChoice and trueFalse) array of answer choices
+- "correct": correct answer (index for MCQ/TF, string for ID)
+- "explanation": brief explanation of the answer
+
+Respond with a JSON array of ${count} questions only. No extra commentary.
+
+Content:
+${text}
+`;
+
+    const result = await model.generateContent(prompt);
+    const responseText = await result.response.text();
+
+    const jsonStart = responseText.indexOf('[');
+    const jsonEnd = responseText.lastIndexOf(']') + 1;
+    const cleanJson = responseText.slice(jsonStart, jsonEnd);
+    const quiz = JSON.parse(cleanJson);
+
+    res.json({ quiz });
+  } catch (err) {
+    console.error('❌ Custom quiz error:', err.message || err);
+    res.status(500).json({ error: 'Failed to generate custom quiz. Try again.' });
+  }
+});

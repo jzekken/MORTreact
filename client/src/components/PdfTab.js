@@ -11,6 +11,8 @@ const PdfTab = ({ onSaveNote }) => {
   const [quiz, setQuiz] = useState(null);
   const [quizScore, setQuizScore] = useState(null);
   const dropRef = useRef(null);
+  const [showFullText, setShowFullText] = useState(false);
+
 
   const handleUpload = async (uploadFile = file) => {
     if (!uploadFile || uploadFile.type !== 'application/pdf') {
@@ -59,6 +61,7 @@ const PdfTab = ({ onSaveNote }) => {
         title: `Note ${Date.now()}`,
         content: text,
       });
+      setExtractedText('');
     }
   };
 
@@ -121,9 +124,22 @@ const PdfTab = ({ onSaveNote }) => {
           </div>
           <div className="summary-text">
             <strong>Summary Result</strong>
-            {extractedText.split(/\n{2,}/).map((para, i) => (
-              <p key={i}>{para.trim()}</p>
-            ))}
+            {extractedText
+              .split(/\n{2,}/)
+              .slice(0, showFullText ? undefined : 2) 
+              .map((para, i) => (
+                <p key={i}>{para.trim()}</p>
+              ))}
+
+            {extractedText.split(/\n{2,}/).length > 3 && (
+              <button
+                className="btn-secondary"
+                onClick={() => setShowFullText(!showFullText)}
+                style={{ marginTop: '0.5rem' }}
+              >
+                {showFullText ? 'Show Less ▲' : 'Show More ▼'}
+              </button>
+            )}
           </div>
 
           <div className="btn-group" style={{ marginTop: '1rem' }}>

@@ -112,24 +112,44 @@ function NotesTab({ notes, setNotes }) {
       </div>
 
       {viewingNote && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <h2>{viewingNote.title}</h2>
-            <div
-              dangerouslySetInnerHTML={{ __html: marked.parse(viewingNote.content) }}
-              className="note-content"
-            />
-            <div className="btn-group">
-              <button className="btn" onClick={() => {
-                setEditingNote(viewingNote);
-                setViewingNote(null);
-              }}>✏️ Edit</button>
-              <button className="btn" onClick={() => generateQuiz(viewingNote.content)}>🧠 Quiz</button>
-              <button className="btn danger" onClick={() => setViewingNote(null)}>❌ Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="modal-backdrop">
+    <div className="modal">
+      <div style={{ position: 'relative' }}>
+        <button
+          onClick={() => setViewingNote(null)}
+          className="btn danger"
+          style={{
+            position: 'absolute',
+            top: '0',
+            right: '0',
+            fontSize: '1.2rem',
+            padding: '0.3rem 0.6rem',
+            borderRadius: '6px',
+            zIndex: 10,
+          }}
+          title="Close"
+        >
+          ❌
+        </button>
+        <h2>{viewingNote.title}</h2>
+      </div>
+
+      <div
+        dangerouslySetInnerHTML={{ __html: marked.parse(viewingNote.content) }}
+        className="note-content"
+      />
+
+      <div className="btn-group">
+        <button className="btn" onClick={() => {
+          setEditingNote(viewingNote);
+          setViewingNote(null);
+        }}>✏️ Edit</button>
+        <button className="btn" onClick={() => generateQuiz(viewingNote.content)}>🧠 Quiz</button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {editingNote && (
         <div className="modal-backdrop">

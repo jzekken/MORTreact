@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import NotesTab from './NotesTab';
 import TodoDashboard from './components/TodoDashboard';
 import PdfTab from './components/PdfTab';
+import QuizMakerTab from './components/QuizMakerTab';
 import './styles/dashboard.css';
 
 const App = () => {
@@ -48,6 +49,11 @@ const App = () => {
           <li className={activeTab === 'pdf' ? 'active' : ''}>
             <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('pdf'); }}>
               <i className='bx bx-file'></i>PDF Tools
+            </a>
+          </li>
+          <li className={activeTab === 'quiz' ? 'active' : ''}>
+            <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('quiz'); }}>
+              <i className='bx bx-edit'></i>Quiz Maker
             </a>
           </li>
 
@@ -142,6 +148,11 @@ const App = () => {
                 <PdfTab onSaveNote={(newNote) => setNotes(prev => [newNote, ...prev])} />
               </div>
             )}
+          {activeTab === 'quiz' && (
+              <div className="quiz-tab-wrapper">
+                <QuizMakerTab />
+              </div>
+          )}
         </main>
       </div>
     </div>
