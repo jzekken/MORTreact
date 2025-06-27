@@ -191,7 +191,10 @@ const ChatbotWidget = ({ contextNote }) => {
           <div style={{
             padding: '10px',
             borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
-            background: isDarkMode ? '#1e1e1e' : '#fff'
+            background: isDarkMode ? '#1e1e1e' : '#fff',
+            position: 'sticky',
+            bottom: 0,
+            zIndex: 2,
           }}>
             <div style={{
               display: 'flex',
