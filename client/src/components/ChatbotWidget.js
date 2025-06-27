@@ -71,7 +71,16 @@ const ChatbotWidget = ({ contextNote }) => {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: isOpen ? '0' : '20px', right: '20px', zIndex: 1000 }}>
+    <div
+      style={{
+        position: 'fixed',
+        bottom: isOpen ? '0' : '20px',
+        right: 0,
+        zIndex: 1000,
+        maxWidth: '100vw',
+        overflowX: 'hidden',
+      }}
+    >
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
@@ -97,18 +106,20 @@ const ChatbotWidget = ({ contextNote }) => {
       {isOpen && (
         <div
           style={{
-            width: '90vw',
+            width: '100vw',
             maxWidth: '360px',
             height: window.innerWidth < 768 ? '80vh' : '470px',
             maxHeight: '95vh',
             background: isDarkMode ? '#1e1e1e' : '#fff',
-            borderRadius: '10px',
+            borderRadius: '10px 0 0 0',
             boxShadow: '0 0 12px rgba(0,0,0,0.2)',
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
+            overflowX: 'hidden',
             color: isDarkMode ? '#f5f5f5' : '#000',
-            touchAction: 'manipulation',
+            boxSizing: 'border-box',
+            marginRight: 0,
           }}
         >
           {/* Header */}
@@ -139,7 +150,7 @@ const ChatbotWidget = ({ contextNote }) => {
             </button>
           </div>
 
-          {/* Messages */}
+          {/* Chat messages */}
           <div
             style={{
               flex: 1,
@@ -150,13 +161,15 @@ const ChatbotWidget = ({ contextNote }) => {
             }}
           >
             {contextNote && (
-              <div style={{
-                background: isDarkMode ? '#2b3b55' : '#eef7ff',
-                padding: '5px 8px',
-                marginBottom: '10px',
-                fontSize: '12px',
-                borderRadius: '6px'
-              }}>
+              <div
+                style={{
+                  background: isDarkMode ? '#2b3b55' : '#eef7ff',
+                  padding: '5px 8px',
+                  marginBottom: '10px',
+                  fontSize: '12px',
+                  borderRadius: '6px',
+                }}
+              >
                 🔗 Using note: <strong>{contextNote.title}</strong>
               </div>
             )}
@@ -171,9 +184,14 @@ const ChatbotWidget = ({ contextNote }) => {
                 <div
                   style={{
                     display: 'inline-block',
-                    background: msg.role === 'user'
-                      ? (isDarkMode ? '#3b5545' : '#DCF8C6')
-                      : (isDarkMode ? '#3a3a3a' : '#e9e9e9'),
+                    background:
+                      msg.role === 'user'
+                        ? isDarkMode
+                          ? '#3b5545'
+                          : '#DCF8C6'
+                        : isDarkMode
+                        ? '#3a3a3a'
+                        : '#e9e9e9',
                     padding: '8px 12px',
                     borderRadius: '14px',
                     maxWidth: '85%',
@@ -189,17 +207,21 @@ const ChatbotWidget = ({ contextNote }) => {
           </div>
 
           {/* Input & Buttons */}
-          <div style={{
-            padding: '10px',
-            borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
-            background: isDarkMode ? '#1e1e1e' : '#fff',
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              width: '100%',
-            }}>
+          <div
+            style={{
+              padding: '10px',
+              borderTop: isDarkMode ? '1px solid #444' : '1px solid #ddd',
+              background: isDarkMode ? '#1e1e1e' : '#fff',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                width: '100%',
+              }}
+            >
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -213,11 +235,8 @@ const ChatbotWidget = ({ contextNote }) => {
                   borderRadius: '6px',
                   background: isDarkMode ? '#2e2e2e' : '#fff',
                   color: isDarkMode ? '#f5f5f5' : '#000',
-                  minWidth: '0', // prevent overflow
-                  maxWidth: window.innerWidth < 420 ? '60%' : '100%',
                 }}
               />
-
               <button
                 onClick={startListening}
                 title="Voice input"
@@ -234,9 +253,8 @@ const ChatbotWidget = ({ contextNote }) => {
                   cursor: 'pointer',
                 }}
               >
-                <FiMic size={16} style={{ transform: 'scaleX(1)' }} />
+                <FiMic size={18} style={{ transform: 'scaleX(1)' }} />
               </button>
-
               <button
                 onClick={handleSend}
                 title="Send"
