@@ -234,7 +234,7 @@ const ChatbotWidget = ({ contextNote }) => {
                   cursor: 'pointer',
                 }}
               >
-                <FiMic size={18} style={{ transform: 'scaleX(1)' }} />
+                <FiMic size={16} style={{ transform: 'scaleX(1)' }} />
               </button>
 
               <button
