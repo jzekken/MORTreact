@@ -196,3 +196,41 @@ app.post('/custom-quiz', async (req, res) => {
   }
 });
 
+app.post('/generate-flashcards', async (req, res) => {
+  const { text } = req.body;
+
+  if (!text || text.trim() === '') {
+    return res.status(400).json({ error: 'Missing input text' });
+  }
+
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+  try {
+    const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash' });
+    const prompt = `
+You're an AI tutor. Generate flashcards from the academic content below.
+
+Output format:
+[
+  { "question": "...", "answer": "..." },
+  ...
+]
+
+Text:
+${text}
+    `;
+
+    const result = await model.generateContent(prompt);
+    const raw = await result.response.text();
+    const start = raw.indexOf('[');
+    const end = raw.lastIndexOf(']') + 1;
+    const json = raw.slice(start, end);
+
+    const flashcards = JSON.parse(json);
+    res.json({ flashcards });
+  } catch (err) {
+    console.error('Flashcard error:', err.message || err);
+    res.status(500).json({ error: 'Failed to generate flashcards' });
+  }
+});
+
