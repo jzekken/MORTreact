@@ -166,7 +166,7 @@ const QuizMakerTab = ({ notes }) => {
         </div>
       </div>
 
-      {quiz && <MixedQuizPlayer quiz={quiz} onClose={() => setQuiz(null)} />}
+      {quiz && <MixedQuizPlayer quiz={quiz} showAnswers={showAnswers} onClose={() => setQuiz(null)} />}
 
     </div>
   );
