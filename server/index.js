@@ -155,25 +155,25 @@ app.post('/custom-quiz', async (req, res) => {
       }
     }).join(', ');
 
-    const prompt = `
-You are a quiz generator. Based on the following academic content, generate exactly ${count} quiz questions.
+   const prompt = `
+      You are a quiz generator. Based on the following academic content, generate exactly ${count} quiz questions.
 
-Each question must include:
-- "question": the question text
-- "type": either "multipleChoice", "trueFalse", or "identification"
-- "options": array of options (only for multipleChoice and trueFalse)
-- "correct": the correct answer (index for MCQ/TF, string for ID)
-- "explanation": a brief explanation for the answer
+      Only include the following types of questions: ${typeInstructions}.
+      Do NOT include any question types outside of these.
 
-The question types should be a mix of: ${typeInstructions}.
+      Each question must include:
+      - "question": the question text
+      - "type": either "multipleChoice", "trueFalse", or "identification"
+      - "options": array of options (only for multipleChoice and trueFalse)
+      - "correct": the correct answer (index for MCQ/TF, string for ID)
+      - "explanation": a brief explanation for the answer
 
-⚠️ VERY IMPORTANT: Only return a valid JSON array of exactly ${count} quiz question objects.
-Do NOT return more or fewer than ${count}. Do NOT include any commentary, markdown, headings, or other text outside the JSON array.
+      ⚠️ VERY IMPORTANT: Only return a valid JSON array of exactly ${count} quiz question objects.
+      Do NOT return more or fewer than ${count}. Do NOT include any commentary, markdown, headings, or other text outside the JSON array.
 
-Academic content:
-${text}
-`;
-
+      Academic content:
+      ${text}
+      `;
     const result = await model.generateContent(prompt);
     const responseText = await result.response.text();
 
