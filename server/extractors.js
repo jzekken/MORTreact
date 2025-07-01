@@ -1,5 +1,5 @@
 const mammoth = require('mammoth');
-const pptxParser = require('pptx-parser');
+const pptx2json = require('pptx2json');
 const Tesseract = require('tesseract.js');
 
 // DOCX extraction
@@ -8,15 +8,11 @@ async function extractDocxText(buffer) {
   return result.value;
 }
 
-// PPTX extraction
+// PPTX extraction using pptx2json
 function extractPptxText(buffer) {
-  return new Promise((resolve, reject) => {
-    pptxParser(buffer, (err, data) => {
-      if (err) return reject(err);
-      const text = data.map(slide => slide.text).join('\n\n');
-      resolve(text);
-    });
-  });
+  const result = pptx2json(buffer);
+  const text = result.map(slide => slide.text).join('\n\n');
+  return text;
 }
 
 // IMAGE OCR extraction
