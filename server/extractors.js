@@ -16,7 +16,10 @@ async function extractPptxText(buffer) {
   fs.writeFileSync(tempFilePath, buffer);
 
   try {
-    const slides = await pptx2json(tempFilePath); // ✅ await here
+    const PPTX2Json = require('pptx2json');
+    const parser = new PPTX2Json(); // ✅ FIX: use new
+    const slides = await parser.parse(tempFilePath); // ✅ FIX: call .parse()
+
     const text = slides.map(slide => slide.text).join('\n\n');
     return text;
   } catch (err) {
@@ -26,6 +29,7 @@ async function extractPptxText(buffer) {
     fs.unlinkSync(tempFilePath);
   }
 }
+
 
 
 // IMAGE OCR
