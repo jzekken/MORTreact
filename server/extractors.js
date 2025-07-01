@@ -16,7 +16,7 @@ async function extractPptxText(buffer) {
   fs.writeFileSync(tempFilePath, buffer);
 
   try {
-    const slides = pptx2json(tempFilePath);
+    const slides = await pptx2json(tempFilePath); // ✅ await here
     const text = slides.map(slide => slide.text).join('\n\n');
     return text;
   } catch (err) {
@@ -26,6 +26,7 @@ async function extractPptxText(buffer) {
     fs.unlinkSync(tempFilePath);
   }
 }
+
 
 // IMAGE OCR
 async function extractImageText(buffer) {
