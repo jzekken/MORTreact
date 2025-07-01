@@ -159,7 +159,25 @@
   background: #fff;
   padding: 20px;
   border-radius: 10px;
+  max-height: 400px; /* Adjust height if needed */
+  overflow-y: auto;
 }
+
+/* Scrollbar style for light mode */
+.completed-tasks::-webkit-scrollbar {
+  width: 8px;
+}
+
+.completed-tasks::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* Scrollbar style for dark mode */
+body.dark .completed-tasks::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 
 /* Add note card */
 .note-card.add-card {
@@ -499,4 +517,148 @@ body.dark .btn-primary:hover {
 
 .btn-secondary:hover {
   background-color: #f0f0f0;
+}
+
+.note-grid::-webkit-scrollbar {
+  width: 8px;
+}
+.note-grid::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+body.dark .note-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+.note-grid {
+  max-height: 300px; /* or however much space you want */
+  overflow-y: auto;
+}
+body.dark h1,
+body.dark h2,
+body.dark h3,
+body.dark h4,
+body.dark h5,
+body.dark p,
+body.dark span {
+  color: var(--text-color);
+}
+body.dark .todo-app h2,
+body.dark .task-status h3,
+body.dark .completed-tasks h3,
+body.dark .note-card p,
+body.dark .header span {
+  color: var(--text-color);
+}
+
+/* Shared Button Styles */
+.btn-group .btn {
+  padding: 10px 16px;
+  background: #153677;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-group .btn:hover {
+  background: #102a5e;
+  transform: translateY(-1px);
+}
+
+.btn-group .btn:active {
+  transform: scale(0.98);
+}
+
+/* Standalone button override */
+.btn {
+  padding: 10px 16px;
+  background: #153677;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background: #102a5e;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn.danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn.danger:hover {
+  background-color: #d32f2f;
+}
+
+/* Dark Mode */
+body.dark .btn {
+  background-color: #4e085f;
+}
+
+body.dark .btn:hover {
+  background-color: #3a0648;
+}
+
+body.dark .btn.danger {
+  background-color: #e53935;
+}
+
+body.dark .btn.danger:hover {
+  background-color: #c62828;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+body.dark .close-btn {
+  background: none;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: #ccc;
+}
+body.dark .close-btn:hover {
+  color: #ff6b6b;
+}
+@media (max-width: 768px) {
+  .modal {
+    padding: 1rem;
+    width: 95%;
+  }
 }

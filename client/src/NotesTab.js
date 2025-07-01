@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import ChatbotWidget from './components/ChatbotWidget';
 import NoteGrid from './components/NoteGrid';
 import QuizPlayer from './components/QuizPlayer';
+import FlashcardGrid from './components/FlashcardGrid';
+import FlashcardViewer from './components/FlashcardViewer';
 import { marked } from 'marked';
 import './NotesTab.css';
 
@@ -17,6 +19,11 @@ function NotesTab({ notes, setNotes }) {
   });
   const [addingNote, setAddingNote] = useState(false);
   const [newNote, setNewNote] = useState({ title: '', content: '' });
+  const [flashcards, setFlashcards] = useState(() => {
+    const saved = localStorage.getItem('flashcards');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [viewingFlashcardSet, setViewingFlashcardSet] = useState(null);
 
   const generateQuiz = async (textToUse) => {
     const res = await fetch('https://reactmort-server.onrender.com/generate-quiz', {
@@ -29,6 +36,32 @@ function NotesTab({ notes, setNotes }) {
       setQuiz(data.quiz);
     } else {
       alert('Quiz generation failed.');
+    }
+  };
+
+  const generateFlashcards = async (textToUse, title) => {
+    const res = await fetch('https://reactmort-server.onrender.com/generate-flashcards', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: textToUse })
+    });
+    const data = await res.json();
+    if (data.flashcards) {
+      const flashcardSet = {
+        id: Date.now(),
+        title,
+        cards: data.flashcards.map((card, index) => ({
+          id: Date.now() + index,
+          front: card.question,
+          back: card.answer
+        }))
+      };
+      const updated = [flashcardSet, ...flashcards];
+      setFlashcards(updated);
+      localStorage.setItem('flashcards', JSON.stringify(updated));
+      alert('Flashcards saved!');
+    } else {
+      alert('Flashcard generation failed.');
     }
   };
 
@@ -82,74 +115,55 @@ function NotesTab({ notes, setNotes }) {
         </div>
 
         <div className="completed-tasks">
-          <h3>Completed Quiz</h3>
-          {quizHistory.length > 0 ? (
-            quizHistory.map((quiz) => (
-              <div className="task-row completed" key={quiz.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div className="task-title">{quiz.title}</div>
-                  <div className="task-date">{quiz.date}</div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <div className="task-score">{quiz.score} / {quiz.total}</div>
-                  <button
-                    className="btn danger"
-                    onClick={() => {
-                      const updated = quizHistory.filter(q => q.id !== quiz.id);
-                      setQuizHistory(updated);
-                      localStorage.setItem('quizHistory', JSON.stringify(updated));
-                    }}
-                  >
-                    🗑
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p>No quiz taken yet.</p>
-          )}
+          <h3>Saved Flashcards</h3>
+          <FlashcardGrid
+            flashcards={flashcards}
+            onOpen={setViewingFlashcardSet}
+            onDelete={(id) => {
+              const updated = flashcards.filter(card => card.id !== id);
+              setFlashcards(updated);
+              localStorage.setItem('flashcards', JSON.stringify(updated));
+            }}
+            onRename={(id, newTitle) => {
+              const updated = flashcards.map(set =>
+                set.id === id ? { ...set, title: newTitle } : set
+              );
+              setFlashcards(updated);
+              localStorage.setItem('flashcards', JSON.stringify(updated));
+            }}
+          />
         </div>
       </div>
 
       {viewingNote && (
-  <div className="modal-backdrop">
-    <div className="modal">
-      <div style={{ position: 'relative' }}>
-        <button
-          onClick={() => setViewingNote(null)}
-          className="btn danger"
-          style={{
-            position: 'absolute',
-            top: '0',
-            right: '0',
-            fontSize: '1.2rem',
-            padding: '0.3rem 0.6rem',
-            borderRadius: '6px',
-            zIndex: 10,
-          }}
-          title="Close"
-        >
-          ❌
-        </button>
-        <h2>{viewingNote.title}</h2>
-      </div>
+        <div className="modal-backdrop">
+          <div className="modal">
+            <div className="modal-header">
+              <h2>{viewingNote.title}</h2>
+              <button
+                onClick={() => setViewingNote(null)}
+                className="close-btn"
+                aria-label="Close Note"
+              >
+                ❌
+              </button>
+            </div>
+            <div
+              dangerouslySetInnerHTML={{ __html: marked.parse(viewingNote.content) }}
+              className="note-content"
+            />
 
-      <div
-        dangerouslySetInnerHTML={{ __html: marked.parse(viewingNote.content) }}
-        className="note-content"
-      />
-
-      <div className="btn-group">
-        <button className="btn" onClick={() => {
-          setEditingNote(viewingNote);
-          setViewingNote(null);
-        }}>✏️ Edit</button>
-        <button className="btn" onClick={() => generateQuiz(viewingNote.content)}>🧠 Quiz</button>
-      </div>
-    </div>
-  </div>
-)}
-
+            <div className="btn-group">
+              <button className="btn" onClick={() => {
+                setEditingNote(viewingNote);
+                setViewingNote(null);
+              }}>✏️ Edit</button>
+              <button className="btn" onClick={() => generateQuiz(viewingNote.content)}>🧠 Quiz</button>
+              <button className="btn" onClick={() => generateFlashcards(viewingNote.content, viewingNote.title)}>🗂 Flashcards</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editingNote && (
         <div className="modal-backdrop">
@@ -167,13 +181,10 @@ function NotesTab({ notes, setNotes }) {
               className="input full"
             />
             <div className="btn-group">
-              <button
-                className="btn success"
-                onClick={() => {
-                  setNotes(prev => prev.map(note => note.id === editingNote.id ? editingNote : note));
-                  setEditingNote(null);
-                }}>✅ Save
-              </button>
+              <button className="btn" onClick={() => {
+                setNotes(prev => prev.map(note => note.id === editingNote.id ? editingNote : note));
+                setEditingNote(null);
+              }}>✅ Save</button>
               <button className="btn danger" onClick={() => setEditingNote(null)}>❌ Cancel</button>
             </div>
           </div>
@@ -198,7 +209,7 @@ function NotesTab({ notes, setNotes }) {
               onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
             />
             <div className="btn-group">
-              <button className="btn success" onClick={handleAddNote}>✅ Add</button>
+              <button className="btn" onClick={handleAddNote}>✅ Add</button>
               <button className="btn danger" onClick={() => setAddingNote(false)}>❌ Cancel</button>
             </div>
           </div>
@@ -218,6 +229,13 @@ function NotesTab({ notes, setNotes }) {
             onClose={() => setQuiz(null)}
           />
         </div>
+      )}
+
+      {viewingFlashcardSet && (
+        <FlashcardViewer
+          set={viewingFlashcardSet}
+          onClose={() => setViewingFlashcardSet(null)}
+        />
       )}
 
       <ChatbotWidget contextNote={chatContext} />

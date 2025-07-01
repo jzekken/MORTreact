@@ -84,6 +84,7 @@ const QuizPlayer = ({ quiz, onFinish, onClose }) => {
       }}>
         <button
           onClick={handleQuit}
+          className="btn danger"
           style={{
             position: 'absolute',
             top: '1rem',
@@ -122,7 +123,7 @@ const QuizPlayer = ({ quiz, onFinish, onClose }) => {
                 {finalScore}/{quiz.length}
               </div>
             </div>
-            <button onClick={onClose} style={{ marginTop: '1rem' }}>❌ Close</button>
+            <button className="btn btn-primary" onClick={onClose}>❌ Close</button>
           </div>
         ) : (
           <>
@@ -133,13 +134,11 @@ const QuizPlayer = ({ quiz, onFinish, onClose }) => {
               <button
                 key={i}
                 onClick={() => handleOptionClick(i)}
+                className="btn"
                 style={{
                   display: 'block',
                   width: '100%',
                   margin: '0.5rem 0',
-                  padding: '1rem',
-                  border: 'none',
-                  borderRadius: '8px',
                   backgroundColor: getOptionBg(i),
                   color: isDark ? '#f1f1f1' : '#000',
                   cursor: showAnswer ? 'default' : 'pointer'
@@ -163,7 +162,7 @@ const QuizPlayer = ({ quiz, onFinish, onClose }) => {
             )}
 
             {showAnswer && (
-              <button onClick={handleNext} style={{ marginTop: '1rem' }}>
+              <button className="btn btn-primary" onClick={handleNext} style={{ marginTop: '1rem' }}>
                 {index + 1 < quiz.length ? 'Next' : 'Finish'}
               </button>
             )}

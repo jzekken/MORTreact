@@ -38,7 +38,7 @@ const App = () => {
           </li>
           <li className={activeTab === 'notes' ? 'active' : ''}>
             <a href="#" onClick={(e) => { e.preventDefault(); handleNavClick('notes'); }}>
-              <i className='bx bx-store-alt'></i>Notes
+              <i className='bx bx-book'></i>Notes
             </a>
           </li>
           <li className={activeTab === 'todo' ? 'active' : ''}>

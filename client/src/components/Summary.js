@@ -29,7 +29,7 @@ const Summary = ({ text, onSave }) => {
     <div style={{ padding: '1rem' }}>
       <h2>AI Summary</h2>
       <button
-        className="btn-primary"
+        className="btn btn-primary"
         onClick={handleSummarize}
         disabled={loading}
         style={{ marginBottom: '1rem' }}

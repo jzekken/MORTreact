@@ -39,7 +39,17 @@ body {
   }
 
   .circle-container {
-    flex: 1 1 100%;
+    flex: 1 1 100px;
+    max-width: 100px;
+    margin: 0 auto;
+  }
+
+  .circular-bars {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 16px;
+    justify-content: flex-start;
   }
 
   .filters {
@@ -62,6 +72,10 @@ body {
   .task-right {
     margin-top: 10px;
     align-self: flex-end;
+  }
+
+  .task-status {
+    min-height: 220px;
   }
 }
 
@@ -158,6 +172,7 @@ body {
 .circle-container {
   text-align: center;
 }
+
 svg {
   width: 70px;
   height: 70px;

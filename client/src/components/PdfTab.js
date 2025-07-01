@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Summary from './Summary';
 import ChatbotWidget from './ChatbotWidget';
 import QuizPlayer from './QuizPlayer';
-import '../NotesTab.css'; // Update the CSS file name if needed
+import '../NotesTab.css';
 
 const PdfTab = ({ onSaveNote }) => {
   const [file, setFile] = useState(null);
@@ -13,17 +13,27 @@ const PdfTab = ({ onSaveNote }) => {
   const dropRef = useRef(null);
   const [showFullText, setShowFullText] = useState(false);
 
-
   const handleUpload = async (uploadFile = file) => {
-    if (!uploadFile || uploadFile.type !== 'application/pdf') {
-      return alert('Please upload a valid PDF file.');
-    }
+    if (!uploadFile) return alert('Please upload a file.');
 
     const formData = new FormData();
-    formData.append('pdf', uploadFile);
+    formData.append('file', uploadFile);
+
+    let endpoint = '';
+    if (uploadFile.type === 'application/pdf') {
+      endpoint = '/upload';
+    } else if (uploadFile.name.endsWith('.docx')) {
+      endpoint = '/upload-docx';
+    } else if (uploadFile.name.endsWith('.pptx')) {
+      endpoint = '/upload-pptx';
+    } else if (uploadFile.type.startsWith('image/')) {
+      endpoint = '/upload-image';
+    } else {
+      return alert('Unsupported file type.');
+    }
 
     try {
-      const res = await fetch('https://reactmort-server.onrender.com/upload', {
+      const res = await fetch(`https://reactmort-server.onrender.com${endpoint}`, {
         method: 'POST',
         body: formData,
       });
@@ -44,7 +54,6 @@ const PdfTab = ({ onSaveNote }) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text: textToUse }),
     });
-
     const data = await res.json();
     if (data.quiz) {
       setQuiz(data.quiz);
@@ -68,11 +77,11 @@ const PdfTab = ({ onSaveNote }) => {
   const handleDrop = (e) => {
     e.preventDefault();
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === 'application/pdf') {
+    if (droppedFile) {
       setFile(droppedFile);
       handleUpload(droppedFile);
     } else {
-      alert('Only PDF files are supported.');
+      alert('Only supported files are allowed.');
     }
   };
 
@@ -88,7 +97,7 @@ const PdfTab = ({ onSaveNote }) => {
   return (
     <div className="pdf-tab">
       <div className="header">
-        <h1>PDF Scanner</h1>
+        <h1>Document Scanner</h1>
       </div>
 
       <div
@@ -99,13 +108,15 @@ const PdfTab = ({ onSaveNote }) => {
         onDragLeave={handleDragLeave}
       >
         <label htmlFor="pdfInput" className="upload-btn">
-          Upload a PDF <span className="upload-icon">📤</span>
+          Upload a File <span className="upload-icon">📤</span>
         </label>
-        <p className="upload-hint">or<br />Drag and drop a PDF here</p>
+        <p className="upload-hint">
+          or<br />Drag & drop PDF, DOCX, PPTX, or Image
+        </p>
         <input
           id="pdfInput"
           type="file"
-          accept="application/pdf"
+          accept=".pdf,.docx,.pptx,image/*"
           onChange={(e) => {
             setFile(e.target.files[0]);
             handleUpload(e.target.files[0]);
@@ -117,8 +128,8 @@ const PdfTab = ({ onSaveNote }) => {
       {extractedText && (
         <div className="summary-card">
           <div className="summary-header">
-            <h3>PDF Summary</h3>
-            <button className="btn-primary" onClick={() => handleSaveNote(extractedText)}>
+            <h3>Extracted Summary</h3>
+            <button className="btn btn-primary" onClick={() => handleSaveNote(extractedText)}>
               + Add to Notes
             </button>
           </div>
@@ -126,10 +137,8 @@ const PdfTab = ({ onSaveNote }) => {
             <strong>Summary Result</strong>
             {extractedText
               .split(/\n{2,}/)
-              .slice(0, showFullText ? undefined : 2) 
-              .map((para, i) => (
-                <p key={i}>{para.trim()}</p>
-              ))}
+              .slice(0, showFullText ? undefined : 2)
+              .map((para, i) => <p key={i}>{para.trim()}</p>)}
 
             {extractedText.split(/\n{2,}/).length > 3 && (
               <button
@@ -143,27 +152,16 @@ const PdfTab = ({ onSaveNote }) => {
           </div>
 
           <div className="btn-group" style={{ marginTop: '1rem' }}>
-            <button
-              className="btn-primary"
-              disabled={!extractedText.trim()}
-              onClick={() => handleSaveNote(extractedText)}
-            >
+            <button className="btn" onClick={() => handleSaveNote(extractedText)}>
               💾 Save as Note
             </button>
-            <button
-              className="btn-primary"
-              disabled={!extractedText.trim()}
-              onClick={() => generateQuiz(extractedText)}
-            >
+            <button className="btn" onClick={() => generateQuiz(extractedText)}>
               🧠 Generate Quiz
             </button>
           </div>
 
           <div style={{ marginTop: '2rem' }}>
-            <Summary
-              text={extractedText}
-              onSave={(summary) => handleSaveNote(summary)}
-            />
+            <Summary text={extractedText} onSave={(summary) => handleSaveNote(summary)} />
           </div>
         </div>
       )}

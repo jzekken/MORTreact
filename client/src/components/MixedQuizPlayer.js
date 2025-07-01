@@ -10,24 +10,33 @@ const MixedQuizPlayer = ({ quiz, onClose, showAnswers }) => {
   const current = quiz[index];
 
   const handleSubmit = () => {
-    let isCorrect = false;
+  let isCorrect = false;
 
-    if (current.type === 'multipleChoice') {
-      isCorrect = parseInt(answer) === current.correct;
-    } else {
-      isCorrect =
-        answer.trim().toLowerCase() ===
-        current.correct.toString().trim().toLowerCase();
-    }
+  if (current.type === 'multipleChoice') {
+    // Compare selected index to correct index
+    isCorrect = parseInt(answer) === current.correct;
+  } else if (current.type === 'trueFalse') {
+    // Compare string (case-insensitive)
+    const correct = String(current.options?.[current.correct] || current.correct).trim().toLowerCase();
+    const user = String(answer).trim().toLowerCase();
+    isCorrect = user === correct;
+  } else if (current.type === 'identification') {
+    // Compare string (case-insensitive)
+    const correct = String(current.correct).trim().toLowerCase();
+    const user = String(answer).trim().toLowerCase();
+    isCorrect = user === correct;
+  }
 
-    if (isCorrect) setScore((prev) => prev + 1);
+  if (isCorrect) setScore((prev) => prev + 1);
 
-    if (showAnswers === 'After each item') {
-      setShowExplanation(true);
-    } else {
-      handleNext();
-    }
-  };
+  if (showAnswers === 'After each item') {
+    setShowExplanation(true);
+  } else {
+    handleNext();
+  }
+};
+
+
 
   const handleNext = () => {
     if (index + 1 < quiz.length) {
@@ -55,8 +64,8 @@ const MixedQuizPlayer = ({ quiz, onClose, showAnswers }) => {
         </label>
       ));
     } else if (current.type === 'trueFalse') {
-      return ['True', 'False'].map((opt, i) => (
-        <label key={i} style={{ display: 'block', margin: '8px 0' }}>
+      return ['True', 'False'].map((opt) => (
+        <label key={opt} style={{ display: 'block', margin: '8px 0' }}>
           <input
             type="radio"
             name="tf"
@@ -172,9 +181,7 @@ const MixedQuizPlayer = ({ quiz, onClose, showAnswers }) => {
                     }}
                   >
                     <strong>Explanation:</strong>
-                    <p>
-                      {current.explanation || 'No explanation provided.'}
-                    </p>
+                    <p>{current.explanation || 'No explanation provided.'}</p>
                   </div>
                 )}
                 <button onClick={handleNext} style={{ marginTop: '1rem' }}>
