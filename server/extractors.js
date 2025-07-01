@@ -1,5 +1,5 @@
 const mammoth = require('mammoth');
-const pptx2json = require('pptx2json');
+const pptxParser = require('pptx-parser');
 const Tesseract = require('tesseract.js');
 const fs = require('fs');
 const path = require('path');
@@ -16,14 +16,13 @@ async function extractPptxText(buffer) {
   fs.writeFileSync(tempFilePath, buffer);
 
   try {
-    const PPTX2Json = require('pptx2json');
-    const parser = new PPTX2Json(); // ✅ FIX: use new
-    const slides = await parser.parse(tempFilePath); // ✅ FIX: call .parse()
-
-    const text = slides.map(slide => slide.text).join('\n\n');
+    const result = await pptxParser.parsePptx(tempFilePath);
+    const text = result
+      .map(slide => slide.texts.map(t => t.text).join(' '))
+      .join('\n\n');
     return text;
   } catch (err) {
-    console.error('pptx2json error:', err);
+    console.error('pptx-parser error:', err);
     throw new Error('Failed to parse PPTX');
   } finally {
     fs.unlinkSync(tempFilePath);
