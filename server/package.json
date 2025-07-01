@@ -15,8 +15,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "mammoth": "^1.9.1",
     "multer": "^2.0.1",
     "pdf-parse": "^1.1.1",
-    "pdfjs-dist": "^5.3.31"
+    "pdfjs-dist": "^5.3.31",
+    "pptx-parser": "^1.1.7-beta.9",
+    "tesseract.js": "^6.0.1"
   }
 }

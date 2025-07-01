@@ -234,3 +234,37 @@ ${text}
   }
 });
 
+const { extractDocxText, extractPptxText, extractImageText } = require('./extractors');
+
+// DOCX Upload
+app.post('/upload-docx', upload.single('file'), async (req, res) => {
+  try {
+    const text = await extractDocxText(req.file.buffer);
+    res.json({ text });
+  } catch (err) {
+    console.error('DOCX error:', err.message);
+    res.status(500).json({ error: 'Failed to extract DOCX text' });
+  }
+});
+
+// PPTX Upload
+app.post('/upload-pptx', upload.single('file'), async (req, res) => {
+  try {
+    const text = await extractPptxText(req.file.buffer);
+    res.json({ text });
+  } catch (err) {
+    console.error('PPTX error:', err.message);
+    res.status(500).json({ error: 'Failed to extract PPTX text' });
+  }
+});
+
+// IMAGE OCR Upload
+app.post('/upload-image', upload.single('file'), async (req, res) => {
+  try {
+    const text = await extractImageText(req.file.buffer);
+    res.json({ text });
+  } catch (err) {
+    console.error('Image OCR error:', err.message);
+    res.status(500).json({ error: 'Failed to extract text from image' });
+  }
+});
