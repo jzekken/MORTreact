@@ -1,20 +1,18 @@
+// server/fileProcessor.js (UPDATED for Render-safe formatted DOCX output)
 const mammoth = require('mammoth');
 const unzipper = require('unzipper');
 const xml2js = require('xml2js');
 const Tesseract = require('tesseract.js');
-const fs = require('fs');
-const path = require('path');
 
-// DOCX extraction
+// DOCX to HTML (Preserves formatting like tables, bold, etc.)
 async function extractDocxText(buffer) {
-  const result = await mammoth.extractRawText({ buffer });
-  return result.value;
+  const result = await mammoth.convertToHtml({ buffer });
+  return result.value; // HTML string
 }
 
-// PPTX extraction (unzipper + xml2js method)
+// PPTX text extraction (wraps in divs for basic structure)
 async function extractPptxText(buffer) {
   const slidesText = [];
-
   const directory = await unzipper.Open.buffer(buffer);
   const slideFiles = directory.files.filter(file =>
     file.path.startsWith('ppt/slides/slide') && file.path.endsWith('.xml')
@@ -37,13 +35,13 @@ async function extractPptxText(buffer) {
       }
     }
 
-    slidesText.push(texts.join(' '));
+    slidesText.push(`<div class="slide"><h3>Slide</h3><p>${texts.join(' ')}</p></div>`);
   }
 
-  return slidesText.join('\n\n');
+  return slidesText.join('\n');
 }
 
-// IMAGE OCR extraction
+// Image OCR
 async function extractImageText(buffer) {
   const {
     data: { text },
