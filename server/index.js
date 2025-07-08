@@ -5,8 +5,8 @@ const fs = require('fs');
 const multer = require('multer');
 require('dotenv').config();
 
-const cohere = require('cohere-ai');
-cohere.init(process.env.COHERE_API_KEY);
+const { CohereClient } = require("cohere-ai");
+const cohere = new CohereClient({ apiKey: process.env.COHERE_API_KEY });
 
 const app = express();
 const PORT = process.env.PORT || 5000;
